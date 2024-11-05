@@ -1,4 +1,3 @@
-// Wait for the DOM to be fully loaded
 window.onload = function() {
     // Access the video element and canvas
     const video = document.getElementById('video');
@@ -8,8 +7,8 @@ window.onload = function() {
     // Request access to the webcam
     navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
-            video.srcObject = stream;  // Set the video source to the stream
-            video.play(); // Start playing the video stream
+            video.srcObject = stream;
+            video.play();
         })
         .catch((err) => {
             console.error("Error accessing webcam: " + err);
@@ -23,7 +22,7 @@ window.onload = function() {
         // Display the captured image on the page
         const photoElement = document.getElementById('photo');
         photoElement.src = imageUrl;
-        photoElement.style.display = 'block'; // Show the image
+        photoElement.style.display = 'block';
 
         // Send the image data to the server
         fetch('http://127.0.0.1:5001/upload-image', {
