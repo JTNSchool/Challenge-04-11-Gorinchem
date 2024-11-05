@@ -26,7 +26,7 @@ window.onload = function() {
         photoElement.style.display = 'block'; // Show the image
 
         // Send the image data to the server
-        fetch('http://127.0.0.1:5000/upload-image', {
+        fetch('http://127.0.0.1:5001/upload-image', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
