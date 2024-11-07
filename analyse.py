@@ -6,15 +6,15 @@ from PIL import Image
 import base64
 
 # Path to the main directory containing subdirectories of images
-FOLDER_PATH = 'images'
+DATABASE_PATH = 'images'
 
 # Dictionary to hold face encodings and associated names
 known_faces = {}
 
-# Function to load images from the folder and compute encodings
-def load_folder():
-    for person_name in os.listdir(FOLDER_PATH):
-        person_dir = os.path.join(FOLDER_PATH, person_name)
+# Function to load images from the database and compute encodings
+def load_database():
+    for person_name in os.listdir(DATABASE_PATH):
+        person_dir = os.path.join(DATABASE_PATH, person_name)
         
         # Check if it's a directory (folder for a person)
         if os.path.isdir(person_dir):
@@ -34,17 +34,23 @@ def load_folder():
                 else:
                     print(f"Skipping {filename} in {person_name}: found {len(encodings)} faces")
 
-# Run this at startup to populate known faces from the folder
-load_folder()
+# Run this at startup to populate known faces from the database
+load_database()
 
-# Function to analyze an image and compare it to the folder
+# Function to analyze an image and compare it to the database
 def start(image_data):
     # If image_data is in base64, decode it
     if isinstance(image_data, str):
         image_data = base64.b64decode(image_data.split(",")[1])  # Remove "data:image/png;base64," if present
     
-    # Convert the byte data to a PIL image, then to a numpy array for face_recognition
+    # Convert the byte data to a PIL image
     image = Image.open(BytesIO(image_data))
+    
+    # Ensure the image is in RGB format
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+    
+    # Convert the PIL image to a numpy array for face_recognition
     image_np = np.array(image)
     
     # Get face encodings from the target image
@@ -52,7 +58,7 @@ def start(image_data):
     
     if not face_encodings:
         print("No faces found in the provided image.")
-        return None
+        return {"status": "error", "message": "No faces found."}
 
     # Loop through faces in the input image (in case there are multiple)
     results = []
@@ -77,4 +83,4 @@ def start(image_data):
             print("No match found for this face.")
             results.append("Unknown")
 
-    return results
+    return {"status": "success", "matches": results}
