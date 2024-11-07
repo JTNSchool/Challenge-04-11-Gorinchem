@@ -1,17 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Capture</title>
+    <title>Maak een foto</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        #camera-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        video, img {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #neem-foto {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        #resultaat {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Webcam Capture</h1>
-    <video id="video" width="640" height="480" autoplay></video>
-    <button id="captureButton">Capture Photo</button>
-    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-    <img id="photo" alt="Captured Image" style="display:none;"/>
-    
-    <script src="script.js"></script>
+
+    <h1>Maak een foto met uw camera</h1>
+
+    <div id="camera-container">
+        <video id="video" autoplay></video>
+        <img id="foto" alt="Gemaakte foto" style="display:none;"/>
+    </div>
+    <button id="neem-foto">Maak foto</button>
+    <div id="resultaat"></div> <!-- Resultaat bericht -->
+
+    <script>
+        const video = document.getElementById('video');
+        const photoButton = document.getElementById('neem-foto');
+        const photo = document.getElementById('foto');
+        const canvas = document.createElement('canvas');
+        const resultaatDiv = document.getElementById('resultaat');
+
+        // Camera toegang krijgen
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error("Camera toegang geweigerd of niet ondersteund", error);
+            });
+
+        // Functie voor foto nemen en herkenning simuleren
+        photoButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Toon de gemaakte foto
+            const dataUrl = canvas.toDataURL('image/png');
+            photo.setAttribute('src', dataUrl);
+            photo.style.display = 'block';
+
+
+        });
+
+
+    </script>
+
 </body>
 </html>

@@ -1,6 +1,5 @@
-import pyuac
-import analyse
 
+import pyuac
 if not pyuac.isUserAdmin():
     pyuac.runAsAdmin()
     exit()
@@ -33,9 +32,7 @@ def upload_image():
             with open(filepath, "wb") as f:
                 f.write(image_data)
 
-            result = analyse.start(image_data)
-            
-            return jsonify({"status": "success", "filename": filename, "result": result})
+            return jsonify({"status": "success", "filename": filename})
 
         except (IndexError, ValueError, base64.binascii.Error) as e:
             # Handle any Base64 decoding errors
